@@ -57,7 +57,7 @@ fn stream_fastq(filepath: &str) -> io::Result<()> {
 
         if is_header_assigned == 1 {
             let collapsed_line = collapse_dinuct(&fastq_line);
-            println!(">{header}");
+            println!(">{header}_dc"); // dinucleotide collapsed
             println!("{collapsed_line}");
             is_header_assigned = 0;
         }
@@ -92,9 +92,8 @@ fn collapse_dinuct(fastq_entry: &str) -> String {
         }
         should_collapse = 0;
     }
-    println!("{new_str}");
-    new_str
 
+    new_str
 }
 
 // tests
