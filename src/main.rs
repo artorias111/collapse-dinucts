@@ -2,19 +2,29 @@ use std::fs::File;
 use std::path::Path;
 use std::io::{self, prelude::*, BufReader};
 use flate2::read::MultiGzDecoder;
+use clap::Parser;
 
+#[derive(Parser, Debug)]
+struct Args {
+    #[arg(short, long)]
+    reads: String,
+}
 
 fn main() {
-    let _ = stream_fastq("path");
+    let args = Args::parse();
+    let path = &args.reads;
+    let _ = stream_fastq(path);
 }
 
 
 fn stream_fastq(filepath: &str) -> io::Result<()> {
-    let mut is_gzipped = 0;
+    let is_gzipped:i32;
     let filepath = Path::new(filepath);
 
     if filepath.extension().unwrap() == "gz" {
         is_gzipped = 1;
+    } else {
+        is_gzipped = 0;
     }
 
     let _display = filepath.display();
@@ -76,14 +86,11 @@ fn collapse_dinuct(fastq_entry: &str) -> String {
         prev_c1 = c1;
         prev_c2 = c2;
 
-        if should_collapse == 1 {
-            should_collapse = 0;
-        } else {
+        if should_collapse == 0 {
             new_str.push(c1);
             new_str.push(c2);
-            should_collapse = 0;
         }
-
+        should_collapse = 0;
     }
     println!("{new_str}");
     new_str
@@ -105,6 +112,12 @@ mod tests {
     #[test]
     fn test2_collapse_dinuct_dev() {
         let sequence = "GCGCGCGC";
+        collapse_dinuct(sequence);
+    }
+
+    #[test]
+    fn test3_collapse_dinuct_dev() {
+        let sequence = "TTAGGCTTTGCGCAGTAGCGCGCGCGCGCGCGAATATATTATATATATATATATATATATATATATATATATATATATATATATATGGGGGGGGGGGCGCGCGCGCGCGCGATATATATATATATAAGAGAGAGAGAGAGAGTCTCTCTCTCTCTCTCTCTC";
         collapse_dinuct(sequence);
     }
 }
