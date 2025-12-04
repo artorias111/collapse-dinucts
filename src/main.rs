@@ -96,6 +96,37 @@ fn collapse_dinuct(fastq_entry: &str) -> String {
     new_str
 }
 
+
+fn collapse_specific_dincuelotide(query: &str, fastq_entry:&str) -> String {
+    let rc_query = revcomp(query);
+    let flipped_query = flip_dinuc(query);
+    let rc_flipped_query = revcomp(&flipped_query);
+    todo!("implement collapse specific dinuc");
+}
+
+
+fn revcomp(nucleotide: &str) -> String {
+    let mut chars_iter = nucleotide.chars();
+    let mut revcomp_str = String::new();
+    while let Some(c) = chars_iter.next() {
+        let x = match c {
+            'A' => 'T',
+            'G' => 'C',
+            'T' => 'A',
+            'C' => 'G',
+            'N' => 'N',
+            _ => 'N'
+        };
+        revcomp_str.push(x);
+    }
+    revcomp_str
+}
+
+fn flip_dinuc(dinuc: &str) -> String { // 'AG' -> 'GA' and so on
+    dinuc.chars().rev().collect()
+}
+
+
 // tests
 
 #[cfg(test)]
@@ -119,4 +150,24 @@ mod tests {
         let sequence = "TTAGGCTTTGCGCAGTAGCGCGCGCGCGCGCGAATATATTATATATATATATATATATATATATATATATATATATATATATATATGGGGGGGGGGGCGCGCGCGCGCGCGATATATATATATATAAGAGAGAGAGAGAGAGTCTCTCTCTCTCTCTCTCTC";
         collapse_dinuct(sequence);
     }
+
+    // revcomp tests
+    use crate::revcomp;
+    
+    #[test]
+    fn revcomp_test1() {
+        let sequence = "ATATAGATA";
+        revcomp(sequence);
+    }
+
+    // fliptests
+
+    use crate::flip_dinuc;
+
+    #[test]
+    fn flip_test1() {
+        assert_eq!("GA", flip_dinuc("AG"));
+    }
+
 }
+
