@@ -71,7 +71,7 @@ fn stream_fastq(filepath: &str, threshold: f32) -> io::Result<()> {
             };
 
             if retained_string != "not retained" {
-                println!(">{header}"); 
+                println!("{header}");
                 println!("{retained_string}");
             }
             is_header_assigned = 0;
